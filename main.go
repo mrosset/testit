@@ -41,7 +41,6 @@ func main() {
 func start_tests() {
 	pname, _ := os.Getwd()
 	pname = fmt.Sprintf("%s.test", path.Base(pname))
-	fmt.Println(pname)
 	exec.Command("killall", pname).Run()
 	gotest := exec.Command("go", "test")
 	gotest.Stderr = os.Stderr
@@ -56,7 +55,7 @@ func update_files() (changed bool, err error) {
 		if err != nil {
 			return err
 		}
-		if path[:1] == "." || info.IsDir() {
+		if path[:1] == "." || info.IsDir() || filepath.Ext(path) != ".go"{
 			return nil
 		}
 		hash, err := file.Md5(path)
