@@ -33,12 +33,12 @@ func main() {
 			fmt.Println(err)
 		}
 		if dirty {
-			start_tests()
+			doTests()
 		}
 	}
 }
 
-func start_tests() {
+func doTests() {
 	pname, _ := os.Getwd()
 	pname = fmt.Sprintf("%s.test", path.Base(pname))
 	exec.Command("killall", pname).Run()
@@ -55,7 +55,7 @@ func update_files() (changed bool, err error) {
 		if err != nil {
 			return err
 		}
-		if path[:1] == "." || info.IsDir() || filepath.Ext(path) != ".go"{
+		if path[:1] == "." || info.IsDir() || filepath.Ext(path) != ".go" {
 			return nil
 		}
 		hash, err := file.Md5(path)
@@ -74,6 +74,10 @@ func update_files() (changed bool, err error) {
 			files[path] = hash
 		}
 		return nil
+	}
+	if file.Exists(".testit") {
+		doTests()
+		os.Remove(".testit")
 	}
 	return changed, filepath.Walk(".", markFn)
 }
